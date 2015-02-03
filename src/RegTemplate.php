@@ -94,7 +94,7 @@ class RegTemplate{
             $this->template = trim($this->template);
         }
 
-        preg_match_all('/' . preg_quote($this->var_start) . '/', $this->template, $var_matches, PREG_OFFSET_CAPTURE);
+        preg_match_all('/' . preg_quote($this->var_start, '/') . '/', $this->template, $var_matches, PREG_OFFSET_CAPTURE);
         foreach($var_matches[0] as $var_match){
             $var_pos = $var_match[1];
             $this->add_raw(substr($this->template, $this->pos, $var_pos - $this->pos));
@@ -164,7 +164,7 @@ class RegTemplate{
             $raw = preg_replace('/\s+/', ' ', $raw);
         }
 
-        $this->reg .= preg_quote($raw);
+        $this->reg .= preg_quote($raw, '/');
     }
 
     protected function parse_var(){
@@ -187,7 +187,7 @@ class RegTemplate{
             $this->reg .= '(' . $this->rule_dflt . ')';
         }
 
-        if(preg_match('/' . preg_quote($this->var_end) . '/A', $this->template, $matches, null, $this->pos)){
+        if(preg_match('/' . preg_quote($this->var_end, '/') . '/A', $this->template, $matches, null, $this->pos)){
             $this->pos += strlen($matches[0]);
         }else{
             throw new \Exception('Expected end-of-variable token, but got something else. Around: ' . $this->around());
