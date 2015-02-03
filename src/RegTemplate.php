@@ -81,7 +81,7 @@ class RegTemplate{
      * @param $template string
      *
      * @return $this
-     * @throws Exception
+     * @throws \Exception
      */
     public function parse_template($template){
         $this->template = $template;
@@ -172,13 +172,13 @@ class RegTemplate{
             $this->names[] = $matches[1];
             $this->pos += strlen($matches[0]);
         }else{
-            throw new Exception('Expected variable name, but got something else around: ' . $this->around());
+            throw new \Exception('Expected variable name, but got something else around: ' . $this->around());
         }
 
         if(preg_match('/\|\s*(\w+)\s*/A', $this->template, $matches, null, $this->pos)){
             $rule = $matches[1];
             if(!isset($this->rules[$rule])){
-                throw new Exception('Unknown rule: ' . $rule . ', around: ' . $this->around());
+                throw new \Exception('Unknown rule: ' . $rule . ', around: ' . $this->around());
             }
 
             $this->reg .= '(' . $this->rules[$rule] . ')';
@@ -190,7 +190,7 @@ class RegTemplate{
         if(preg_match('/' . preg_quote($this->var_end) . '/A', $this->template, $matches, null, $this->pos)){
             $this->pos += strlen($matches[0]);
         }else{
-            throw new Exception('Expected end-of-variable token, but got something else. Around: ' . $this->around());
+            throw new \Exception('Expected end-of-variable token, but got something else. Around: ' . $this->around());
         }
     }
 
