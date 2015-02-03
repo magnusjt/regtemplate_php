@@ -1,0 +1,18 @@
+{
+  "name": "magnusjt/regtemplate_php",
+  "description": "Match a template and extract the variables",
+  "keywords": ["template", "reverse", "regex"],
+  "license": "MIT",
+  "type": "project",
+  "require": {},
+  "require-dev": {},
+  "autoload": {
+    "psr-4": {
+      "RegTemplate\\": "src"
+    }
+  },
+  "config": {
+    "preferred-install": "dist"
+  },
+  "minimum-stability": "stable"
+}
