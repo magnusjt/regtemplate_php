@@ -17,11 +17,17 @@ class RegTemplate{
     /** @var string  */
     protected $rule_dflt = '\S+';
 
+    /** @var string  */
+    protected $ignore_var_name = 'any';
+
     /** @var  array */
     protected $rules = array(
-        'digits' => '\d+',
-        'word'   => '\w+',
-        'float'  => '\d+\.\d+'
+        'digits'        => '\d+',
+        'word'          => '\w+',
+        'float'         => '\d+\.\d+',
+        'notwhitespace' => '\S+',
+        'whitespace'    => '\s+',
+        'anything'      => '.*',
     );
 
     /** @var int  */
@@ -55,9 +61,24 @@ class RegTemplate{
 
     /**
      * @param $ignore bool
+     *
+     * Ignore excess whitespace
+     * (essentially replace any type of whitespace with a single space)
      */
     public function set_ignore_whitespace($ignore = true){
         $this->ignore_whitespace = $ignore;
+    }
+
+    /**
+     * @param $name string
+     *
+     * Any variable with the name set here
+     * will not be returned in matches.
+     *
+     * Default: any
+     */
+    public function set_ignore_var_name($name){
+        $this->ignore_var_name = $name;
     }
 
     /**
@@ -168,8 +189,12 @@ class RegTemplate{
     }
 
     protected function parse_var(){
+        $ignore_var = true;
         if(preg_match('/\s*(\w+)\s*/A', $this->template, $matches, null, $this->pos)){
-            $this->names[] = $matches[1];
+            if($matches[1] != $this->ignore_var_name){
+                $this->names[] = $matches[1];
+                $ignore_var = false;
+            }
             $this->pos += strlen($matches[0]);
         }else{
             throw new \Exception('Expected variable name, but got something else around: ' . $this->around());
@@ -181,10 +206,16 @@ class RegTemplate{
                 throw new \Exception('Unknown rule: ' . $rule . ', around: ' . $this->around());
             }
 
-            $this->reg .= '(' . $this->rules[$rule] . ')';
+            $rule = $this->rules[$rule];
             $this->pos += strlen($matches[0]);
         }else{
-            $this->reg .= '(' . $this->rule_dflt . ')';
+            $rule = $this->rule_dflt;
+        }
+
+        if($ignore_var){
+            $this->reg .= $rule;
+        }else{
+            $this->reg .= '(' . $rule . ')';
         }
 
         if(preg_match('/' . preg_quote($this->var_end, '/') . '/A', $this->template, $matches, null, $this->pos)){
