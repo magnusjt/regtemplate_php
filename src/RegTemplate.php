@@ -1,6 +1,11 @@
 <?php
 namespace RegTemplate;
 
+class RegTemplateException extends \Exception{};
+class SyntaxError extends RegTemplateException{}
+class IllegalRuleName extends RegTemplateException{}
+class IllegalVarToken extends RegTemplateException{}
+
 class RegTemplate{
     /** @var  string */
     protected $base_dir;
@@ -47,6 +52,10 @@ class RegTemplate{
     }
 
     public function set_variable_tokens($var_start = '{{', $var_end = '}}'){
+        if(preg_match('/^\w/', $var_end)){
+            throw new RegTemplateException('End variable token cannot begin with alphanumeric character, as that may conflict with rule names');
+        }
+
         $this->var_start = $var_start;
         $this->var_end = $var_end;
     }
@@ -54,8 +63,14 @@ class RegTemplate{
     /**
      * @param $rule_name  string
      * @param $rule_regex string
+     *
+     * @throws IllegalRuleName
      */
     public function set_rule($rule_name, $rule_regex){
+        if(preg_match('/[^\w]/', $rule_name, $matches)){
+            throw new IllegalRuleName('Rule names must be alphanumeric');
+        }
+
         $this->rules[$rule_name] = $rule_regex;
     }
 
@@ -197,13 +212,16 @@ class RegTemplate{
             }
             $this->pos += strlen($matches[0]);
         }else{
-            throw new \Exception('Expected variable name, but got something else around: ' . $this->around());
+            throw new SyntaxError('Expected variable name, but got something else around: ' . $this->around());
         }
 
-        if(preg_match('/\|\s*(\w+)\s*/A', $this->template, $matches, null, $this->pos)){
+        if(preg_match('/\|\s*reg="((?:[^\\\\"]|\\\\.)*)"\s*/A', $this->template, $matches, null, $this->pos)){
+            $rule = $matches[1];
+            $this->pos += strlen($matches[0]);
+        }else if(preg_match('/\|\s*(\w+)\s*/A', $this->template, $matches, null, $this->pos)){
             $rule = $matches[1];
             if(!isset($this->rules[$rule])){
-                throw new \Exception('Unknown rule: ' . $rule . ', around: ' . $this->around());
+                throw new SyntaxError('Unknown rule: ' . $rule . ', around: ' . $this->around());
             }
 
             $rule = $this->rules[$rule];
@@ -221,7 +239,7 @@ class RegTemplate{
         if(preg_match('/' . preg_quote($this->var_end, '/') . '/A', $this->template, $matches, null, $this->pos)){
             $this->pos += strlen($matches[0]);
         }else{
-            throw new \Exception('Expected end-of-variable token, but got something else. Around: ' . $this->around());
+            throw new SyntaxError('Expected end-of-variable token, but got something else. Around: ' . $this->around());
         }
     }
 
