@@ -18,12 +18,12 @@ $template->parse_template_from_file('file_inside_some_dir.txt');
 # Match an output string against the template. Name=>value array returned.
 $name_value = $template->match('Some number: 64');
 
-# Match all. If the regex matches several times, return a list of list of name?>value arrays:
+# Match all. If the regex matches several times, return a list of list of name=>value arrays:
 $match_list = $template->match_all('Some number: 64, Some number: 65');
 ````
 
 ### Example template:
-````php
+````
 Displaying numbers from index {{ index_name|word }}
 Number of interesting events: {{ num_events|digits }}
 Number of pages: {{ num_pages|digits }}
@@ -43,7 +43,7 @@ $template->set_rule('on_or_off', '(?:on|off)');
 $template->set_default_rule('\S+');
 ````
 
-### Inline regexes
+### Inline regexes:
 
 You can use inline regexes instead of rules in your template.
 Remember to escape any double quotes with backslash.
