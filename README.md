@@ -13,7 +13,7 @@ $template = \RegTemplate\RegTemplate('some/dir');
 $template->parse_template_from_file('file_inside_some_dir.txt');
 
 # Or parse from a string:
-# $template->parse('Some number: {{ number|digits }}');
+# $template->parse_template('Some number: {{ number|digits }}');
 
 # Match an output string against the template. Name=>value array returned.
 $name_value = $template->match('Some number: 64');
@@ -49,7 +49,7 @@ You can use inline regexes instead of rules in your template.
 Remember to escape any double quotes with backslash.
 
 ````php
-$template->parse('{{ number|reg="\d\d\d" }}
+$template->parse_template('{{ number|reg="\d\d\d" }}
 ````
 
 ### Ignoring whitespace (on by default):
