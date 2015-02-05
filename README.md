@@ -6,7 +6,7 @@ PHP class for parsing a template into a regex, used for matching into name-value
 See also examples in the examples folder.
 
 ### Basic usage example:
-````
+````php
 $template = \RegTemplate\RegTemplate('some/dir');
 
 # Parse a template from a file inside the base directory
@@ -22,8 +22,8 @@ $name_value = $template->match('Some number: 64');
 $match_list = $template->match_all('Some number: 64, Some number: 65');
 ````
 
-### Example of a template:
-````
+### Example template:
+````php
 Displaying numbers from index {{ index_name|word }}
 Number of interesting events: {{ num_events|digits }}
 Number of pages: {{ num_pages|digits }}
@@ -35,7 +35,7 @@ Status: {{ on_or_off|reg="(?:on|off)" }}
 A rule is a name and a regex to match it.
 If the regex has capturing groups, ensure that they are non-capturing like this: (?:).
 
-````
+````php
 $template->set_rule('digits', '\d+');
 $template->set_rule('on_or_off', '(?:on|off)');
 
@@ -48,7 +48,7 @@ $template->set_default_rule('\S+');
 You can use inline regexes instead of rules in your template.
 Remember to escape any double quotes with backslash.
 
-````
+````php
 $template->parse('{{ number|reg="\d\d\d" }}
 ````
 
@@ -57,7 +57,7 @@ $template->parse('{{ number|reg="\d\d\d" }}
 Ignore any excess whitespace by replacing all whitespace with a single space.
 You can turn this feature on/off like this:
 
-````
+````php
 $template->set_ignore_whitespace(true);
 ````
 
@@ -66,7 +66,7 @@ $template->set_ignore_whitespace(true);
 If the string you want to match contains the default variable tokens,
 you can change the tokens like this:
 
-````
+````php
 $template->set_variable_tokens('{{', '}}');
 ````
 
@@ -75,6 +75,6 @@ $template->set_variable_tokens('{{', '}}');
 Any variable with the name 'any' is skipped. It is matched, but not returned.
 You can change the name to ignore like this:
 
-````
+````php
 $template->set_ignore_var_name('any');
 ````
