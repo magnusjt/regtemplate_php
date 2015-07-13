@@ -1,5 +1,21 @@
 # regtemplate_php
 PHP class for parsing a template into a regex, used for matching into name-value pairs.
+This is useful when you want to create a regex from a large amount of text without having
+to fiddle with all the details of the regex (such as escaping text).
+
+Ex:
+````
+$template->parse_template('Some number: {{ number|digits }}');
+$name_value = $template->match('Some number: 5678');
+
+/*
+Should result in:
+
+$name_value = [
+    'number' => 5678
+];
+*/
+````
 
 ## Usage
 
