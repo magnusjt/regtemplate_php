@@ -17,6 +17,14 @@ $name_value = [
 */
 ````
 
+## Installation
+
+Install with composer:
+
+````
+composer require magnusjt/regtemplate_php
+````
+
 ## Usage
 
 See also examples in the examples folder.
